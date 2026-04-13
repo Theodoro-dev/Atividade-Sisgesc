@@ -6,7 +6,7 @@
 
 ## 🗂️ Visão Geral do Projeto
 
-Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bom Jesus do Cangaíba**, organizado em quatro módulos integrados: **Acadêmico**, **Serviço Social**, **RH** e **Financeiro**, com foco em integridade referencial e rastreabilidade dos dados da instituição.
+Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bom Jesus do Cangaíba**, organizado em quatro módulos integrados: **Acadêmico**, **RH** e **Financeiro**, com foco em integridade referencial e rastreabilidade dos dados da instituição.
 
 ---
 
