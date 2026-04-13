@@ -1,6 +1,6 @@
 -- ================================================================
 -- SisGESC - Sistema de Gestao Educacional e Social
--- CCA Bom Jesus do Cangaiba
+-- CCA Bom Jesus do Cangaib
 -- ================================================================
 -- REGRAS DE NEGOCIO:
 -- RN01 Aluno deve ter entre 8 e 14 anos (calculado via data_nascimento)
