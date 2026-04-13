@@ -16,7 +16,7 @@ Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bo
 
 ### ✅ Iteração 1 — Levantamento de Requisitos e Arquitetura
 
-**Objetivo:** Mapear as necessidades da instituição e definir os módulos do sistema.
+**Objetivo:** Mapear as necessidades da instituição e definir os módulos do sistema
 
 **Entregas:**
 - Definição dos 4 módulos: Acadêmico · RH · Financeiro
