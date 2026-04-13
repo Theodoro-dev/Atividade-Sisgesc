@@ -19,14 +19,13 @@ Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bo
 **Objetivo:** Mapear as necessidades da instituição e definir os módulos do sistema.
 
 **Entregas:**
-- Definição dos 4 módulos: Acadêmico · Serviço Social · RH · Financeiro
+- Definição dos 4 módulos: Acadêmico · RH · Financeiro
 - Identificação das entidades principais por módulo
 - Decisões técnicas: `DECIMAL` para campos financeiros, prefixos `pk_` / `fk_` / `tb_`, snake_case
 
 | Módulo | Responsabilidade |
 |---|---|
 | 📚 Acadêmico | Alunos, turmas, matrículas, presença |
-| 🤝 Serviço Social | Atendimentos, beneficiários, famílias |
 | 👥 RH | Funcionários, cargos, departamentos |
 | 💰 Financeiro | Contratos, pagamentos, receitas |
 
@@ -41,7 +40,6 @@ Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bo
 | Módulo | Tabelas |
 |---|---|
 | 📚 Acadêmico | `tb_aluno`, `tb_turma`, `tb_matricula`, `tb_presenca`, `tb_curso` |
-| 🤝 Serviço Social | `tb_beneficiario`, `tb_familia`, `tb_atendimento`, `tb_tipo_atendimento` |
 | 👥 RH | `tb_funcionario`, `tb_cargo`, `tb_departamento` |
 | 💰 Financeiro | `tb_contrato`, `tb_pagamento`, `tb_receita`, `tb_despesa`, `tb_categoria_financeira` |
 
