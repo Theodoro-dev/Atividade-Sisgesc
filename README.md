@@ -96,6 +96,7 @@ sistema-gestao-sisgesc/
 | Nome |
 |---|
 | Ana Clara Gregório dos Santos |
+| Agatha Ribeiro |
 | Bruno Oliveira Theodoro |
 | Cauê Porto de Andrade |
 | Dandhara Fernandes de Campos Lima |
