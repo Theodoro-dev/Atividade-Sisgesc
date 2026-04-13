@@ -110,4 +110,4 @@ sistema-gestao-sisgesc/
 
 ## 🏛️ Instituição
 
-Projeto Extensionista — **UNIVERSIDADE CIDADE DE SÃO PAULO (UNICID)** · Disciplina: Banco de Dados · 2026
+Projeto Extensionista — **UNIVERSIDADE CIDADE DE SÃO PAULO (UNICID)** · Disciplina: Banco de Dados . 2026
