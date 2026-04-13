@@ -6,7 +6,7 @@
 
 ## 🗂️ Visão Geral do Projeto
 
-Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bom Jesus do Cangaíba**, organizado em quatro módulos integrados: **Acadêmico**, **Serviço Social**, **RH** e **Financeiro**, com foco em integridade referencial e rastreabilidade dos dados da instituição.
+Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bom Jesus do Cangaíba**, organizado em quatro módulos integrados: **Acadêmico**, **RH** e **Financeiro**, com foco em integridade referencial e rastreabilidade dos dados da instituição.
 
 ---
 
@@ -19,14 +19,13 @@ Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bo
 **Objetivo:** Mapear as necessidades da instituição e definir os módulos do sistema.
 
 **Entregas:**
-- Definição dos 4 módulos: Acadêmico · Serviço Social · RH · Financeiro
+- Definição dos 4 módulos: Acadêmico · RH · Financeiro
 - Identificação das entidades principais por módulo
 - Decisões técnicas: `DECIMAL` para campos financeiros, prefixos `pk_` / `fk_` / `tb_`, snake_case
 
 | Módulo | Responsabilidade |
 |---|---|
 | 📚 Acadêmico | Alunos, turmas, matrículas, presença |
-| 🤝 Serviço Social | Atendimentos, beneficiários, famílias |
 | 👥 RH | Funcionários, cargos, departamentos |
 | 💰 Financeiro | Contratos, pagamentos, receitas |
 
@@ -41,7 +40,6 @@ Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bo
 | Módulo | Tabelas |
 |---|---|
 | 📚 Acadêmico | `tb_aluno`, `tb_turma`, `tb_matricula`, `tb_presenca`, `tb_curso` |
-| 🤝 Serviço Social | `tb_beneficiario`, `tb_familia`, `tb_atendimento`, `tb_tipo_atendimento` |
 | 👥 RH | `tb_funcionario`, `tb_cargo`, `tb_departamento` |
 | 💰 Financeiro | `tb_contrato`, `tb_pagamento`, `tb_receita`, `tb_despesa`, `tb_categoria_financeira` |
 
@@ -98,6 +96,7 @@ sistema-gestao-sisgesc/
 | Nome |
 |---|
 | Ana Clara Gregório dos Santos |
+| Agatha Ribeiro |
 | Bruno Oliveira Theodoro |
 | Cauê Porto de Andrade |
 | Dandhara Fernandes de Campos Lima |
@@ -111,4 +110,4 @@ sistema-gestao-sisgesc/
 
 ## 🏛️ Instituição
 
-Projeto Extensionista — **UNIVERSIDADE CIDADE DE SÃO PAULO (UNICID)** · Disciplina: Banco de Dados · 2026
+Projeto Extensionista — **UNIVERSIDADE CIDADE DE SÃO PAULO (UNICID)** · Disciplina: Banco de Dados . 2026
