@@ -19,7 +19,7 @@ Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bo
 **Objetivo:** Mapear as necessidades da instituição e definir os módulos do sistema.
 
 **Entregas:**
-- Definição dos 4 módulos: Acadêmico · RH · Financeiro
+- Definição dos 3 módulos: Acadêmico · RH · Financeiro
 - Identificação das entidades principais por módulo
 - Decisões técnicas: `DECIMAL` para campos financeiros, prefixos `pk_` / `fk_` / `tb_`, snake_case
 
