@@ -32,10 +32,10 @@
 -- sincronizados com este padrao.
 -- ================================================================
 
-CREATE DATABASE IF NOT EXISTS sisgesc_publico_nota_dois
+CREATE DATABASE IF NOT EXISTS sisgesc_publico_nota
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
-USE sisgesc_publico_nota_dois;
+USE sisgesc_publico_nota;
 
 SET @from_waitlist = 0;
 
@@ -113,23 +113,20 @@ DELIMITER ;
 -- Alunos atendidos pela instituicao (8 a 14 anos)
 CREATE TABLE tb_aluno (
     pk_aluno        INT          NOT NULL AUTO_INCREMENT,
-    nome_aluno      VARCHAR(120) NOT NULL,
+    nome_aluno      VARCHAR(60) NOT NULL,
     nis_aluno       CHAR(11)     NOT NULL,
     cpf_aluno       CHAR(11)     NOT NULL,
-    sexo            VARCHAR(10)  NOT NULL,
+    sexo            ENUM("Masculino", "Feminino")  NOT NULL,
     data_nascimento DATE         NOT NULL,
-    raca_cor        VARCHAR(20)  NOT NULL DEFAULT 'Nao declarada',
-    situacao_aluno  VARCHAR(12)  NOT NULL DEFAULT 'ativo',
+    raca_cor        ENUM("Branca", "Preta", "Parda", "Amarela", "Indigena", "Nao declarada")  NOT NULL DEFAULT 'Nao declarada',
+    situacao_aluno  ENUM("ativo", "inativo", "transferido", "concluido") NOT NULL DEFAULT 'ativo',
     data_criacao    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_aluno),
     UNIQUE (nis_aluno),
     UNIQUE (cpf_aluno),
     CHECK (cpf_aluno      REGEXP '^[0-9]{11}$'),
-    CHECK (nis_aluno      REGEXP '^[0-9]{11}$'),
-    CHECK (sexo           IN ('Masculino','Feminino')),
-    CHECK (raca_cor       IN ('Branca','Preta','Parda','Amarela','Indigena','Nao declarada')),
-    CHECK (situacao_aluno IN ('ativo','inativo','transferido','concluido'))
+    CHECK (nis_aluno      REGEXP '^[0-9]{11}$')
 );
 
 -- Responsaveis legais dos alunos
@@ -147,7 +144,7 @@ CREATE TABLE tb_responsavel (
 -- Cargos da instituicao
 CREATE TABLE tb_cargo (
     pk_cargo             INT          NOT NULL AUTO_INCREMENT,
-    nome_cargo           VARCHAR(60)  NOT NULL,
+    nome_cargo           VARCHAR(30)  NOT NULL,
     descricao_cargo      VARCHAR(200),
     carga_horaria_padrao INT          NOT NULL,
     data_criacao         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -161,27 +158,25 @@ CREATE TABLE tb_cargo (
 CREATE TABLE tb_turma (
     pk_turma            INT         NOT NULL AUTO_INCREMENT,
     nome_turma          VARCHAR(50) NOT NULL,
-    turno               VARCHAR(10) NOT NULL,
+    turno               ENUM("Manha","Tarde") NOT NULL,
     faixa_etaria_inicio INT         NOT NULL,
     faixa_etaria_fim    INT         NOT NULL,
     capacidade_max      INT         NOT NULL DEFAULT 40,
     ano_letivo          INT         NOT NULL,
-    status_turma        VARCHAR(10) NOT NULL DEFAULT 'ativa',
+    status_turma        ENUM("ativa","encerrada") NOT NULL DEFAULT 'ativa',
     data_criacao        DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_turma),
     UNIQUE (nome_turma, ano_letivo),
-    CHECK (turno        IN ('Manha','Tarde')),
     CHECK (capacidade_max > 0),
     CHECK (faixa_etaria_inicio >= 8),
-    CHECK (faixa_etaria_fim    <= 14),
-    CHECK (status_turma IN ('ativa','encerrada'))
+    CHECK (faixa_etaria_fim    <= 14)
 );
 
 -- Programas sociais que custeiam o CCA
 CREATE TABLE tb_programa_social (
     pk_programa   INT          NOT NULL AUTO_INCREMENT,
-    nome_programa VARCHAR(100) NOT NULL,
+    nome_programa VARCHAR(50) NOT NULL,
     descricao     VARCHAR(200),
     data_criacao  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -203,7 +198,7 @@ CREATE TABLE tb_categoria_gastos (
 -- Contas bancarias da instituicao
 CREATE TABLE tb_conta (
     pk_conta     INT           NOT NULL AUTO_INCREMENT,
-    nome_conta   VARCHAR(100)  NOT NULL,
+    nome_conta   VARCHAR(50)  NOT NULL,
     banco        VARCHAR(60)   NOT NULL,
     agencia      CHAR(10)      NOT NULL,
     numero_conta VARCHAR(20)   NOT NULL,
@@ -225,12 +220,12 @@ CREATE TABLE tb_funcionario (
     pk_funcionario        INT           NOT NULL AUTO_INCREMENT,
     cpf_funcionario       CHAR(11)      NOT NULL,
     fk_cargo              INT           NOT NULL,
-    nome_funcionario      VARCHAR(120)  NOT NULL,
+    nome_funcionario      VARCHAR(50)  NOT NULL,
     data_admissao         DATE          NOT NULL,
-    tipo_vinculo          VARCHAR(15)   NOT NULL DEFAULT 'CLT',
+    tipo_vinculo          ENUM("CLT","Estatutario","Voluntario")   NOT NULL DEFAULT 'CLT',
     salario               DECIMAL(10,2) NOT NULL,
     carga_horaria_semanal INT           NOT NULL,
-    status_funcionario    VARCHAR(15)   NOT NULL DEFAULT 'ativo',
+    status_funcionario    ENUM("ativo","afastado","desligado")  NOT NULL DEFAULT 'ativo',
     data_criacao          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_funcionario),
@@ -239,9 +234,7 @@ CREATE TABLE tb_funcionario (
         ON DELETE RESTRICT ON UPDATE CASCADE,
     CHECK (cpf_funcionario  REGEXP '^[0-9]{11}$'),
     CHECK (salario > 0),
-    CHECK (carga_horaria_semanal > 0),
-    CHECK (tipo_vinculo       IN ('CLT','Estatutario','Voluntario')),
-    CHECK (status_funcionario IN ('ativo','afastado','desligado'))
+    CHECK (carga_horaria_semanal > 0)
 );
 
 -- Contatos do responsavel (telefone e/ou e-mail — multiplos por responsavel)
@@ -249,15 +242,14 @@ CREATE TABLE tb_funcionario (
 CREATE TABLE tb_contato_responsavel (
     pk_contato_responsavel INT          NOT NULL AUTO_INCREMENT,
     fk_responsavel         INT          NOT NULL,
-    tipo_contato           VARCHAR(10)  NOT NULL,
+    tipo_contato           ENUM("telefone","email")  NOT NULL,
     valor_contato          VARCHAR(120) NOT NULL,
     principal              BOOLEAN      NOT NULL DEFAULT 0,
     data_criacao           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_contato_responsavel),
     FOREIGN KEY (fk_responsavel) REFERENCES tb_responsavel(pk_responsavel)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (tipo_contato IN ('telefone','email'))
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Contatos do funcionario (telefone e/ou e-mail)
@@ -265,15 +257,14 @@ CREATE TABLE tb_contato_responsavel (
 CREATE TABLE tb_contato_funcionario (
     pk_contato_funcionario INT          NOT NULL AUTO_INCREMENT,
     fk_funcionario         INT          NOT NULL,
-    tipo_contato           VARCHAR(10)  NOT NULL,
+    tipo_contato           ENUM("telefone", "email")  NOT NULL,
     valor_contato          VARCHAR(120) NOT NULL,
     principal              BOOLEAN      NOT NULL DEFAULT 0,
     data_criacao           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_contato_funcionario),
     FOREIGN KEY (fk_funcionario) REFERENCES tb_funcionario(pk_funcionario)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (tipo_contato IN ('telefone','email'))
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Relacionamento aluno-responsavel N:N
@@ -281,7 +272,7 @@ CREATE TABLE tb_aluno_responsavel (
     pk_aluno_responsavel INT         NOT NULL AUTO_INCREMENT,
     fk_aluno             INT         NOT NULL,
     fk_responsavel       INT         NOT NULL,
-    parentesco           VARCHAR(20) NOT NULL,
+    parentesco           ENUM('Pai','Mae','Avo','Ava','Tio','Tia','Padrasto','Madrasta','Tutor','Responsavel Legal','Outro') NOT NULL,
     responsavel_legal    BOOLEAN     NOT NULL DEFAULT 0,
     data_criacao         DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -290,9 +281,7 @@ CREATE TABLE tb_aluno_responsavel (
     FOREIGN KEY (fk_aluno)       REFERENCES tb_aluno(pk_aluno)
         ON DELETE CASCADE  ON UPDATE CASCADE,
     FOREIGN KEY (fk_responsavel) REFERENCES tb_responsavel(pk_responsavel)
-        ON DELETE RESTRICT ON UPDATE CASCADE,
-    CHECK (parentesco IN ('Pai','Mae','Avo','Ava','Tio','Tia',
-                          'Padrasto','Madrasta','Tutor','Responsavel Legal','Outro'))
+        ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Vinculo familiar entre alunos (ex: irmaos na mesma instituicao)
@@ -301,7 +290,7 @@ CREATE TABLE tb_vinculo_familiar (
     pk_vinculo   INT         NOT NULL AUTO_INCREMENT,
     fk_aluno_1   INT         NOT NULL,
     fk_aluno_2   INT         NOT NULL,
-    tipo_vinculo VARCHAR(10) NOT NULL DEFAULT 'irmao',
+    tipo_vinculo ENUM("irmao","gemeo","primo","outro") NOT NULL DEFAULT 'irmao',
     data_criacao DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_vinculo),
@@ -309,8 +298,7 @@ CREATE TABLE tb_vinculo_familiar (
     FOREIGN KEY (fk_aluno_1) REFERENCES tb_aluno(pk_aluno)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (fk_aluno_2) REFERENCES tb_aluno(pk_aluno)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (tipo_vinculo IN ('irmao','gemeo','primo','outro'))
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Matriculas dos alunos nas turmas
@@ -319,7 +307,7 @@ CREATE TABLE tb_matricula (
     fk_aluno           INT         NOT NULL,
     fk_turma           INT         NOT NULL,
     data_matricula     DATE        NOT NULL,
-    situacao_matricula VARCHAR(10) NOT NULL DEFAULT 'ativa',
+    situacao_matricula ENUM("ativa","cancelada","concluida") NOT NULL DEFAULT 'ativa',
     data_encerramento  DATE,
     data_criacao       DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -327,8 +315,7 @@ CREATE TABLE tb_matricula (
     FOREIGN KEY (fk_aluno) REFERENCES tb_aluno(pk_aluno)
         ON DELETE CASCADE  ON UPDATE CASCADE,
     FOREIGN KEY (fk_turma) REFERENCES tb_turma(pk_turma)
-        ON DELETE RESTRICT ON UPDATE CASCADE,
-    CHECK (situacao_matricula IN ('ativa','cancelada','concluida'))
+        ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Lista de espera (max 40 alunos — RN05)
@@ -338,7 +325,7 @@ CREATE TABLE tb_lista_espera (
     fk_aluno         INT         NOT NULL,
     fk_turma         INT         NOT NULL,
     data_solicitacao DATE        NOT NULL,
-    status_espera    VARCHAR(15) NOT NULL DEFAULT 'aguardando',
+    status_espera   ENUM("aguardando","chamado","matriculado","cancelado") NOT NULL DEFAULT 'aguardando',
     data_chamada     DATE,
     data_criacao     DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -347,8 +334,7 @@ CREATE TABLE tb_lista_espera (
     FOREIGN KEY (fk_aluno) REFERENCES tb_aluno(pk_aluno)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (fk_turma) REFERENCES tb_turma(pk_turma)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (status_espera IN ('aguardando','chamado','matriculado','cancelado'))
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -397,7 +383,7 @@ CREATE TABLE tb_frequencia (
 CREATE TABLE tb_jornada_trabalho (
     pk_jornada     INT         NOT NULL AUTO_INCREMENT,
     fk_funcionario INT         NOT NULL,
-    dia_semana     VARCHAR(15) NOT NULL,
+    dia_semana     ENUM("Segunda","Terca","Quarta","Quinta","Sexta") NOT NULL,
     hora_entrada   TIME        NOT NULL,
     hora_saida     TIME        NOT NULL,
     data_criacao   DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -406,7 +392,6 @@ CREATE TABLE tb_jornada_trabalho (
     UNIQUE (fk_funcionario, dia_semana),
     FOREIGN KEY (fk_funcionario) REFERENCES tb_funcionario(pk_funcionario)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (dia_semana IN ('Segunda','Terca','Quarta','Quinta','Sexta')),
     CHECK (hora_saida > hora_entrada)
 );
 
@@ -448,11 +433,11 @@ CREATE TABLE tb_alerta (
     pk_alerta        INT          NOT NULL AUTO_INCREMENT,
     fk_aluno         INT          NOT NULL,
     fk_funcionario   INT          NOT NULL,
-    tipo_alerta      VARCHAR(25)  NOT NULL,
-    nivel_risco      VARCHAR(10)  NOT NULL DEFAULT 'Medio',
+    tipo_alerta      ENUM("Frequencia Critica","Vulnerabilidade","Evasao Iminente")  NOT NULL,
+    nivel_risco      ENUM("Baixo","Medio","Alto","Critico")  NOT NULL DEFAULT 'Medio',
     descricao_alerta VARCHAR(200) NOT NULL,
     data_alerta      DATE         NOT NULL,
-    status_alerta    VARCHAR(20)  NOT NULL DEFAULT 'Aberto',
+    status_alerta    ENUM("Aberto","Em Acompanhamento","Resolvido")  NOT NULL DEFAULT 'Aberto',
     data_resolucao   DATE,
     data_criacao     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -460,10 +445,7 @@ CREATE TABLE tb_alerta (
     FOREIGN KEY (fk_aluno)       REFERENCES tb_aluno(pk_aluno)
         ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (fk_funcionario) REFERENCES tb_funcionario(pk_funcionario)
-        ON DELETE RESTRICT ON UPDATE CASCADE,
-    CHECK (tipo_alerta   IN ('Frequencia Critica','Vulnerabilidade','Evasao Iminente')),
-    CHECK (nivel_risco   IN ('Baixo','Medio','Alto','Critico')),
-    CHECK (status_alerta IN ('Aberto','Em Acompanhamento','Resolvido'))
+        ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 
@@ -500,14 +482,13 @@ CREATE TABLE tb_fatura (
     descricao       VARCHAR(200)  NOT NULL,
     valor_fatura    DECIMAL(10,2) NOT NULL,
     data_vencimento DATE          NOT NULL,
-    status_fatura   VARCHAR(10)   NOT NULL DEFAULT 'pendente',
+    status_fatura   ENUM("pendente","paga","vencida")  NOT NULL DEFAULT 'pendente',
     data_criacao    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_fatura),
     FOREIGN KEY (fk_categoria) REFERENCES tb_categoria_gastos(pk_categoria)
         ON DELETE RESTRICT ON UPDATE CASCADE,
-    CHECK (valor_fatura  > 0),
-    CHECK (status_fatura IN ('pendente','paga','vencida'))
+    CHECK (valor_fatura  > 0)
 );
 
 -- Pagamentos de faturas vinculados a conta bancaria
@@ -536,7 +517,7 @@ CREATE TABLE tb_pagamento_funcionario (
     mes_referencia   CHAR(7)       NOT NULL,
     valor_pago       DECIMAL(10,2) NOT NULL,
     data_pagamento   DATE          NOT NULL,
-    status_pagamento VARCHAR(10)   NOT NULL DEFAULT 'pendente',
+    status_pagamento ENUM('pendente','pago')   NOT NULL DEFAULT 'pendente',
     data_criacao     DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pk_pagamento),
@@ -546,8 +527,7 @@ CREATE TABLE tb_pagamento_funcionario (
     FOREIGN KEY (fk_repasse)     REFERENCES tb_repasse(pk_repasse)
         ON DELETE RESTRICT ON UPDATE CASCADE,
     CHECK (valor_pago > 0),
-    CHECK (mes_referencia    REGEXP '^[0-9]{4}-[0-9]{2}$'),
-    CHECK (status_pagamento  IN ('pendente','pago'))
+    CHECK (mes_referencia    REGEXP '^[0-9]{4}-[0-9]{2}$')
 );
 
 
