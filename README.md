@@ -1,5 +1,3 @@
-Abaixo está um **README completo e focado na execução do script principal** (`Sisgesc_run_all.sql`). Ele consolida as informações do projeto, destacando os passos necessários para instalar e verificar todo o sistema com um único clique.
-
 ---
 
 # 📋 SisGESC – Sistema de Gestão do CCA Bom Jesus do Cangaíba
