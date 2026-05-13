@@ -1,130 +1,156 @@
 
 ---
 
-# 📋 SisGESC – Sistema de Gestão do CCA Bom Jesus do Cangaíba
+# 📋 SisGESC — Sistema de Gestão do CCA Bom Jesus do Cangaíba
 
-> **Script único de instalação** – Execute um arquivo e tenha o banco de dados OLTP + OLAP totalmente configurado.
-
-## 🚀 Como executar o script único de instalação
-
-### 1️⃣ Pré‑requisitos
-
-Antes de executar, certifique-se de que seu ambiente atende aos requisitos:
-
-- **MySQL Server 8.0+** instalado e em execução
-- **MySQL Workbench** (recomendado) ou qualquer cliente SQL
-- Usuário com privilégios para:
-  - `CREATE DATABASE`
-  - `CREATE TABLE`
-  - `CREATE TRIGGER`
-  - `CREATE EVENT`
-  - `CREATE PROCEDURE`
-  - `CREATE FUNCTION`
-- O **Event Scheduler** do MySQL deve estar ligado (verifique e ative se necessário):
-  ```sql
-  SET GLOBAL event_scheduler = ON;
-  ```
-
-### 2️⃣ Baixar o script principal
-
-No repositório, localize o arquivo:
-
-```
-Sisgesc_run_all.sql
-```
-
-Faça o download ou clone o repositório para sua máquina.
-
-### 3️⃣ Abrir e executar no MySQL Workbench
-
-1. Abra o **MySQL Workbench**.
-2. Conecte‑se ao seu servidor MySQL local (ou remoto).
-3. No menu superior, clique em:
-   ```
-   File → Open SQL Script
-   ```
-4. Selecione o arquivo `Sisgesc_run_all.sql`.
-5. Com o script aberto, clique no ícone **⚡ Execute** (ou pressione `Ctrl + Shift + Enter`).
-
-### 4️⃣ O que acontece automaticamente
-
-O script principal orquestra a execução **sequencial e idempotente** de todos os submódulos:
-
-| Ordem | Script                       | Função                                                       |
-| ----- | ---------------------------- | ------------------------------------------------------------ |
-| 1     | `reset.sql`                  | Remove bancos antigos (`sisgesc_oltp` / `sisgesc_olap`)      |
-| 2     | `sisgesc_OLTP.sql`           | Cria tabelas, triggers, views, procedures e eventos (OLTP)   |
-| 3     | `sisgesc_DML_OLTP.sql`       | Popula todas as 24 tabelas com dados de exemplo              |
-| 4     | `consultas.sql`              | Executa consultas analíticas de exemplo                     |
-| 5     | `sisgesc_OLAP.sql`           | Cria e popula o Data Warehouse (OLAP)                        |
-
-> ⚠️ Nenhuma intervenção manual é necessária. O script é **idempotente** – pode ser reexecutado quantas vezes desejar sem causar duplicação ou erros.
-
-### 5️⃣ Verificações pós‑execução
-
-Para confirmar que tudo funcionou corretamente, execute as consultas abaixo no MySQL Workbench:
-
-```sql
--- Ver os dois bancos criados
-SHOW DATABASES LIKE 'sisgesc%';
-
--- Usar o banco OLTP e listar as 24 tabelas
-USE sisgesc_oltp;
-SHOW TABLES;
-
--- Ver triggers ativas
-SHOW TRIGGERS;
-
--- Ver eventos programados
-SHOW EVENTS;
-
--- Ver procedures armazenadas
-SHOW PROCEDURE STATUS WHERE Db = 'sisgesc_oltp';
-```
-
-Todos os comandos devem retornar sem erros.
-
-### 6️⃣ Resultado esperado
-
-- Banco `sisgesc_oltp` – completo com dados de exemplo
-- Banco `sisgesc_olap` – estruturado para BI/IA
-- Todas as **regras de negócio** implementadas via triggers, procedures e eventos
-- **Consultas analíticas** executadas com sucesso
-- Ambiente pronto para receber análises de **previsão de evasão escolar**
+> **Repositório:** `sistema-gestao-sisgesc` | Projeto de Banco de Dados — UNICID
 
 ---
 
-## 🧩 Estrutura do repositório (para referência)
+## 🗂️ Visão Geral do Projeto
+
+Sistema de banco de dados desenvolvido para gerenciar as operações do **CCA Bom Jesus do Cangaíba**, organizado em três módulos integrados: **Acadêmico**, **RH** e **Financeiro**. O projeto enfatiza integridade referencial, rastreabilidade dos dados e suporte a análises de **BI/IA** para previsão de evasão escolar.
+
+---
+
+## 🎯 Objetivos do Sistema
+
+- Centralizar a gestão administrativa do CCA
+- Garantir integridade e consistência dos dados
+- Automatizar regras de negócio via SQL (triggers, procedures, eventos)
+- Facilitar análises gerenciais e estratégicas
+- Preparar dados para Business Intelligence e Inteligência Artificial
+- Permitir rastreabilidade e auditoria das operações
+
+---
+
+## 🧩 Módulos do Sistema
+
+| Módulo          | Responsabilidade                                   |
+| --------------- | -------------------------------------------------- |
+| 📚 Acadêmico    | Gestão de alunos, matrículas, frequência e turmas  |
+| 👥 RH           | Controle de funcionários, cargos, jornadas e ponto |
+| 💰 Financeiro   | Repasses, gastos, pagamentos e contas              |
+| 🔗 Cross-módulo | Alertas inteligentes e integração entre módulos    |
+
+---
+
+## 📅 Histórico de Iterações
+
+### Iteração 1 — Levantamento de Requisitos
+- Definição dos módulos e entidades principais
+- Arquitetura OLTP + OLAP
+
+### Iteração 2 — Modelagem e Script DDL
+- 24 tabelas implementadas em MySQL
+
+| Módulo          | Tabelas                                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 📚 Acadêmico    | `tb_aluno`, `tb_responsavel`, `tb_aluno_responsavel`, `tb_vinculo_familiar`, `tb_turma`, `tb_matricula`, `tb_lista_espera`, `tb_frequencia` |
+| 👥 RH           | `tb_funcionario`, `tb_cargo`, `tb_contato_funcionario`, `tb_contato_responsavel`, `tb_jornada_trabalho`, `tb_registro_ponto`, `tb_professor_turma` |
+| 💰 Financeiro   | `tb_programa_social`, `tb_repasse`, `tb_categoria_gastos`, `tb_conta`, `tb_gasto`, `tb_fatura`, `tb_pagamento_fatura`, `tb_pagamento_funcionario` |
+| 🔗 Cross-módulo | `tb_alerta`                                                                                                                     |
+
+### Iteração 3 — Padronização
+- Prefixo `tb_` + snake_case, chaves `pk_*` e `fk_*`
+- Tipos: `DECIMAL(10,2)` para monetário, `DATE`/`DATETIME`, coluna `data_criacao` para auditoria
+
+### Iteração 4 — Diagramas ER
+- `Deerdbdiagram.pdf` e `DEERMYSQL.pdf`
+
+### Iteração 5 — Regras de Negócio
+
+| Código | Regra                               | Implementação       |
+| ------ | ----------------------------------- | ------------------- |
+| RN01   | Aluno entre 8 e 14 anos             | Triggers            |
+| RN02   | Apenas uma matrícula ativa          | Trigger             |
+| RN03   | Limite de 200 pessoas               | Trigger + View      |
+| RN04   | Capacidade máxima por turma         | Trigger             |
+| RN05   | Controle da lista de espera         | Triggers            |
+| RN06   | Encerramento automático aos 14 anos | Procedure + Event   |
+| RN07   | Professor em múltiplas turmas       | Tabela N:N          |
+| RN08   | Pagamento vinculado ao repasse      | FK                  |
+| RN09   | Compatibilidade idade/turma         | Trigger             |
+| RN10   | Validação de CPF                    | Function + Triggers |
+
+### Iteração 6 — DML e Idempotência
+- Uso de `INSERT IGNORE`, execução segura e reexecutável, ordem correta de dependências
+
+---
+
+## 🔮 Preparação para BI e IA
+
+| Campo                | Tabela          | Uso                  |
+| -------------------- | --------------- | -------------------- |
+| `presente`           | `tb_frequencia` | Taxa de presença     |
+| `tipo_alerta`        | `tb_alerta`     | Sinalização de risco |
+| `nivel_risco`        | `tb_alerta`     | Grau de criticidade  |
+| `situacao_aluno`     | `tb_aluno`      | Status do aluno      |
+| `situacao_matricula` | `tb_matricula`  | Histórico acadêmico  |
+
+---
+
+## 🗃️ Estrutura do Repositório
 
 ```text
 📁 Atividade-Sisgesc/
-│
-├── 📁 docs/
-│   ├── Deerdbdiagram.pdf
-│   └── DEERMYSQL.pdf
-│
+├── 📁 docs/                 → Diagramas ER
 ├── 📁 scripts/
-│   ├── 📁 01_ddl/          → sisgesc_OLTP.sql
-│   ├── 📁 02_dml/          → sisgesc_DML_OLTP.sql
-│   ├── 📁 03_queries/      → consultas.sql
-│   ├── 📁 04_etl_dw/       → sisgesc_OLAP.sql
-│   └── 📁 05_reset/        → reset.sql
-│
+│   ├── 01_ddl/              → sisgesc_OLTP.sql
+│   ├── 02_dml/              → sisgesc_DML_OLTP.sql
+│   ├── 03_queries/          → consultas.sql
+│   ├── 04_etl_dw/           → sisgesc_OLAP.sql
+│   └── 05_reset/            → reset.sql
 ├── README.md
-└── Sisgesc_run_all.sql     ← ⭐ SCRIPT PRINCIPAL
+└── Sisgesc_run_all.sql      ← Script único de instalação
 ```
 
 ---
 
-## 🛠️ Tecnologias utilizadas
+## 🚀 Como Executar o Projeto (Script Único)
 
-- **MySQL 8.0** – SGBD relacional
-- **MySQL Workbench** – ambiente de desenvolvimento
-- **dbdiagram.io** – modelagem do diagrama ER
+### 📌 Pré‑requisitos
+
+- MySQL Server 8.0+
+- MySQL Workbench (recomendado)
+
+### ⚙️ Passo a passo
+
+1. Abra o **MySQL Workbench** e conecte ao servidor.
+2. `File → Open SQL Script` → selecione o arquivo `Sisgesc_run_all.sql`.
+3. Clique em **⚡ Execute** (ou `Ctrl + Shift + Enter`).
+
+O script executa automaticamente, em ordem:
+
+1. `reset.sql` – remove bancos antigos (`sisgesc_oltp` e `sisgesc_olap`)
+2. `sisgesc_OLTP.sql` – cria todas as tabelas, triggers, views, procedures e eventos
+3. `sisgesc_DML_OLTP.sql` – insere dados de exemplo nas 24 tabelas
+4. `consultas.sql` – roda consultas analíticas de demonstração
+5. `sisgesc_OLAP.sql` – cria e popula o Data Warehouse
+
+### ✅ Verificação pós‑execução
+
+```sql
+SHOW DATABASES LIKE 'sisgesc%';       -- sisgesc_oltp e sisgesc_olap devem existir
+USE sisgesc_oltp;
+SHOW TABLES;                          -- 24 tabelas
+SHOW TRIGGERS;                        -- todas as triggers ativas
+SHOW EVENTS;                          -- eventos programados
+```
+
+Nenhuma mensagem de erro deve aparecer. O sistema estará pronto para uso e análises.
 
 ---
 
-## 👥 Equipe de desenvolvimento
+## 🛠️ Tecnologias Utilizadas
+
+- MySQL 8.0
+- MySQL Workbench
+- dbdiagram.io
+
+---
+
+## 👥 Equipe
 
 | Nome                              |
 | --------------------------------- |
@@ -143,20 +169,15 @@ Todos os comandos devem retornar sem erros.
 
 ## 🏛️ Instituição
 
-Projeto extensionista desenvolvido para a **Universidade Cidade de São Paulo – UNICID**  
+Projeto Extensionista desenvolvido para a **UNIVERSIDADE CIDADE DE SÃO PAULO — UNICID**  
 Disciplina: Banco de Dados – Ano: 2026
 
 ---
 
-## ✅ Resumo para entrega
+## 📚 Considerações Finais
 
-Ao executar `Sisgesc_run_all.sql` você terá:
+O SisGESC aplica conceitos avançados de modelagem relacional, SQL, automação (triggers, procedures, eventos), governança de dados e preparação para BI/IA. Oferece uma solução robusta, escalável e voltada à gestão educacional e à prevenção da evasão escolar.
 
-- ✅ Banco OLTP normalizado (24 tabelas)
-- ✅ Banco OLAP dimensional (estrela)
-- ✅ Triggers, procedures, eventos e funções
-- ✅ Dados de exemplo consistentes
-- ✅ Consultas prontas para análise
-- ✅ Evidência de execução sem erros (print da saída do MySQL)
+---
 
-📌 **Dica para documentar a entrega:** tire prints da janela de mensagens do MySQL Workbench após a execução, mostrando que todos os scripts foram processados com sucesso (sem erros vermelhos).
+✅ **Para instalar todo o sistema, execute um único arquivo:** `Sisgesc_run_all.sql`
