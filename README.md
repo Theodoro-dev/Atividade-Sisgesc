@@ -124,14 +124,26 @@ O esquema foi projetado com campos específicos para alimentar modelos preditivo
 ## 🗃️ Estrutura do Repositório
 
 ```
-sistema-gestao-sisgesc/
+📁 Atividade-Sisgesc/
 │
-├── README.md
-├── sisgesc_OLTP.sql              # Script DDL — estrutura completa (24 tabelas, triggers, views, functions, procedure, event)
-├── sisgesc_DML_OLTP.sql          # Script DML — carga de dados operacionais (idempotente)
-├── sisgec_OLTP_DML_OLTP.sql      # Script unificado DDL + DML
-├── Deerdbdiagram.pdf             # Diagrama ER (dbdiagram.io)
-└── DEERMYSQL.pdf                 # Diagrama ER (MySQL Workbench)
+├── 📁 docs/
+│   ├── Deerdbdiagram.pdf
+│   └── DEERMYSQL.pdf
+│
+├── 📁 scripts/
+│   ├── 📁 01_ddl/
+│   │   └── sisgesc_OLTP.sql
+│   ├── 📁 02_dml/
+│   │   └── sisgesc_DML_OLTP.sql
+│   ├── 📁 03_queries/
+│   │   └── consultas.sql
+│   ├── 📁 04_etl_dw/
+│   │   └── sisgesc_OLAP.sql
+│   ├── 📁 05_reset/
+│   │   └── reset.sql
+│
+├── Sisgesc_run_all.sql                     
+└── README.md
 ```
 
 **Ordem de execução recomendada:**
