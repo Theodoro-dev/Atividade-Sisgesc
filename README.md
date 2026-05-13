@@ -100,10 +100,10 @@ sistema-gestao-sisgesc/
 | Bruno Oliveira Theodoro |
 | Cauê Porto de Andrade |
 | Dandhara Fernandes de Campos Lima |
+| Duquesnio Daniel Bandessa |
 | Gabriela Dias Santos Barros |
 | Kauan Alba Elias |
 | Rayssa dos Santos |
-| Victor Ferrareto Dias |
 | Yasmim Bueno Miranda da Silva |
 
 ---
