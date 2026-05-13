@@ -3,7 +3,7 @@
 
 # 📋 SisGESC — Sistema de Gestão do CCA Bom Jesus do Cangaíba
 
-> **Repositório:** `sistema-gestao-sisgesc` | Projeto de Banco de Dados — UNICID
+> **Repositório:** `Atividade-Sisgesc` | Projeto de Banco de Dados — UNICID
 
 ---
 
